@@ -45,15 +45,25 @@
     .button.secondary { background: transparent; color: var(--slate); }
     .button.secondary:hover { background: #e8e7e2; }
 
-    .header { position: relative; z-index: 5; border-bottom: 1px solid var(--line); background: var(--paper); }
-    .header-inner { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 25px; }
-    .brand { color: var(--slate); font-size: 1.1rem; font-weight: 900; letter-spacing: -.045em; text-decoration: none; white-space: nowrap; }
-    .brand span { color: #b57c24; }
-    .nav { display: flex; align-items: center; gap: clamp(14px, 2.5vw, 34px); }
-    .nav a { font-size: .91rem; font-weight: 700; text-decoration: none; }
-    .nav a:hover { text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 6px; }
-    .nav .contact-link { border: 1px solid var(--slate); padding: 8px 15px; }
-    .menu-toggle { display: none; border: 1px solid var(--slate); background: transparent; color: var(--slate); padding: 8px 14px; font: inherit; font-weight: 800; cursor: pointer; }
+    .header { position: relative; z-index: 5; border-bottom: 1px solid #c8c9c5; background: var(--paper); }
+    .header-inner { position: relative; min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 25px; }
+    .header-inner::after { position: absolute; bottom: -2px; left: clamp(22px, 5vw, 78px); width: 90px; height: 3px; background: var(--gold); content: ""; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; color: var(--slate); font-size: 1.1rem; font-weight: 900; letter-spacing: -.045em; text-decoration: none; white-space: nowrap; }
+    .brand-icon { display: grid; place-items: center; width: 35px; height: 35px; flex: none; background: var(--slate); color: var(--gold-light); font-size: .78rem; font-weight: 900; letter-spacing: -.07em; }
+    .brand-name span { color: #b57c24; }
+    .nav { display: flex; align-items: center; gap: clamp(14px, 2vw, 31px); }
+    .nav a { position: relative; padding-block: 9px; font-size: .91rem; font-weight: 700; text-decoration: none; }
+    .nav a:not(.contact-link)::after { position: absolute; right: 0; bottom: 3px; left: 0; height: 2px; background: #b57c24; content: ""; transform: scaleX(0); transform-origin: left; transition: transform .2s ease; }
+    .nav a:not(.contact-link):hover::after, .nav a:not(.contact-link):focus-visible::after { transform: scaleX(1); }
+    .nav .contact-link { border: 1px solid var(--slate); padding: 8px 15px; transition: background .2s ease, color .2s ease; }
+    .nav .contact-link:hover { background: var(--slate); color: white; }
+    .menu-toggle { display: none; align-items: center; gap: 10px; min-height: 48px; border: 1px solid var(--slate); background: transparent; color: var(--slate); padding: 8px 12px; font: inherit; font-weight: 800; cursor: pointer; }
+    .menu-icon { display: flex; flex-direction: column; justify-content: space-between; width: 20px; height: 16px; }
+    .menu-icon span { display: block; width: 100%; height: 2px; background: var(--slate); transition: transform .2s ease, opacity .2s ease; }
+    .menu-icon span:nth-child(2) { width: 75%; background: #a36d1b; }
+    .header.nav-open .menu-icon span:first-child { transform: translateY(7px) rotate(45deg); }
+    .header.nav-open .menu-icon span:nth-child(2) { opacity: 0; }
+    .header.nav-open .menu-icon span:last-child { transform: translateY(-7px) rotate(-45deg); }
 
     .hero { overflow: hidden; }
     .hero-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); align-items: center; gap: clamp(35px, 6vw, 90px); padding-block: clamp(70px, 7vw, 110px); }
@@ -182,17 +192,19 @@
     @media (max-width: 1040px) {
       .offer-grid, .creative-grid, .audit-grid { grid-template-columns: 1fr; }
     }
-    @media (max-width: 900px) {
+    @media (max-width: 1020px) {
       .hero-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; }
       .hero-photo { max-width: 430px; min-height: 350px; }
       .hero-photo img { max-height: 400px; }
       .section-head { display: block; }
       .section-head p { margin-top: 18px; }
       .about-image { max-width: 300px; }
-      .menu-toggle { display: block; }
-      .nav { display: none; position: absolute; top: 100%; right: 0; left: 0; align-items: stretch; gap: 0; padding: 9px 22px 18px; border-bottom: 1px solid var(--line); background: var(--paper); box-shadow: 0 14px 22px rgba(0,0,0,.08); }
+      .menu-toggle { display: inline-flex; }
+      .nav { display: none; position: absolute; top: 100%; right: 0; left: 0; align-items: stretch; gap: 0; padding: 10px clamp(22px, 5vw, 78px) 18px; border-top: 2px solid var(--gold); border-bottom: 1px solid var(--line); background: var(--paper); box-shadow: 0 14px 22px rgba(0,0,0,.08); }
       .header.nav-open .nav { display: flex; flex-direction: column; }
-      .nav a { padding: 11px 4px; }
+      .nav a { padding: 12px 4px; border-bottom: 1px solid var(--line); }
+      .nav a:not(.contact-link)::after { display: none; }
+      .nav a:not(.contact-link):hover { color: #8b5b18; }
       .nav .contact-link { align-self: start; margin-top: 8px; padding: 8px 14px; }
     }
     @media (max-width: 620px) {
@@ -212,15 +224,15 @@
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .button, .case-toggle { transition: none; }
+      .button, .case-toggle, .nav a, .nav a::after, .menu-icon span { transition: none; }
     }
   </style>
 </head>
 <body>
   <header class="header">
     <div class="header-inner wrap">
-      <a class="brand" href="#top">Lailyn<span>.</span>Verdejo</a>
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menu</button>
+      <a class="brand" href="#top"><span class="brand-icon" aria-hidden="true">LV</span><span class="brand-name">Lailyn<span>.</span>Verdejo</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav"><span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span><span class="menu-label">Menu</span></button>
       <nav class="nav" id="main-nav" aria-label="Main navigation">
         <a href="#results">Results</a>
         <a href="#audit">Quick audit</a>
@@ -466,15 +478,16 @@
   <script>
     const header = document.querySelector('.header');
     const menuToggle = document.querySelector('.menu-toggle');
+    const menuLabel = menuToggle.querySelector('.menu-label');
     menuToggle.addEventListener('click', () => {
       const open = header.classList.toggle('nav-open');
       menuToggle.setAttribute('aria-expanded', String(open));
-      menuToggle.textContent = open ? 'Close' : 'Menu';
+      menuLabel.textContent = open ? 'Close' : 'Menu';
     });
     document.querySelectorAll('.nav a').forEach(link => link.addEventListener('click', () => {
       header.classList.remove('nav-open');
       menuToggle.setAttribute('aria-expanded', 'false');
-      menuToggle.textContent = 'Menu';
+      menuLabel.textContent = 'Menu';
     }));
     const cases = [...document.querySelectorAll('.case-detail')];
     cases.forEach(item => item.addEventListener('toggle', () => {
